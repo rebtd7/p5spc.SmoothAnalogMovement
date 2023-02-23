@@ -3,7 +3,7 @@
   "ModName": "Smooth Analog Movement",
   "ModAuthor": "rebtd7",
   "ModVersion": "1.0.0",
-  "ModDescription": "Description",
+  "ModDescription": "This fixes the \u0022digital-like\u0022 analog stick in the PC version of Persona 5 Strikers.",
   "ModDll": "SmoothAnalogMovement.dll",
   "ModIcon": "Preview.png",
   "ModR2RManagedDll32": "x86/SmoothAnalogMovement.dll",
@@ -11,8 +11,8 @@
   "ModNativeDll32": "",
   "ModNativeDll64": "",
   "Tags": [],
-  "CanUnload": null,
-  "HasExports": null,
+  "CanUnload": false,
+  "HasExports": false,
   "IsLibrary": false,
   "ReleaseMetadataFileName": "SmoothAnalogMovement.ReleaseMetadata.json",
   "PluginData": {
@@ -27,5 +27,5 @@
   "SupportedAppId": [
     "game.exe"
   ],
-  "ProjectUrl": ""
+  "ProjectUrl": "https://github.com/rebtd7/p5spc.SmoothAnalogMovement"
 }
