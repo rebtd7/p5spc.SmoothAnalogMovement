@@ -1,0 +1,31 @@
+{
+  "ModId": "p5spc.SmoothAnalogMovement",
+  "ModName": "Smooth Analog Movement",
+  "ModAuthor": "rebtd7",
+  "ModVersion": "1.0.0",
+  "ModDescription": "Description",
+  "ModDll": "SmoothAnalogMovement.dll",
+  "ModIcon": "Preview.png",
+  "ModR2RManagedDll32": "x86/SmoothAnalogMovement.dll",
+  "ModR2RManagedDll64": "x64/SmoothAnalogMovement.dll",
+  "ModNativeDll32": "",
+  "ModNativeDll64": "",
+  "Tags": [],
+  "CanUnload": null,
+  "HasExports": null,
+  "IsLibrary": false,
+  "ReleaseMetadataFileName": "SmoothAnalogMovement.ReleaseMetadata.json",
+  "PluginData": {
+    "GameBanana": {
+      "ItemType": "Mod",
+      "ItemId": 429128
+    }
+  },
+  "IsUniversalMod": false,
+  "ModDependencies": [],
+  "OptionalDependencies": [],
+  "SupportedAppId": [
+    "game.exe"
+  ],
+  "ProjectUrl": ""
+}
