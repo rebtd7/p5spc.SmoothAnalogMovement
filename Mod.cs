@@ -66,7 +66,7 @@ public class Mod : ModBase // <= Do not Remove.
             Thread.Sleep(20000); // Game crashes if value is changed too soon (anti tamper protection?)
             Memory.Instance.SafeWrite(analogDirectionDeadZoneAddress, 0.0f);
         }).Start();
-
+        _logger.WriteLine($"[SmoothAnalogMovement] Init Ok");
     }
 
     #region For Exports, Serialization etc.
