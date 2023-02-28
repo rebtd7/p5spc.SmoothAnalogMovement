@@ -43,7 +43,7 @@ public class Mod : ModBase // <= Do not Remove.
 
         // If you want to implement e.g. unload support in your mod,
         // and some other neat features, override the methods in ModBase.
-
+        
         var mainModule = Process.GetCurrentProcess().MainModule;
         if (mainModule == null)
         {
@@ -51,21 +51,21 @@ public class Mod : ModBase // <= Do not Remove.
             return;
         }
         var baseAddress = (long)mainModule.BaseAddress;
-        var analogDirectionDeadZoneAddress = (baseAddress + 0x18F8148);
+        var analogDirectionDeadZoneAddress = baseAddress + 0x18F8148;
+        var resolutionChangePatchAddress = baseAddress + 0x2978AFB;
         unsafe
         {
             var analogDirectionDeadZoneValue = *(float*)analogDirectionDeadZoneAddress;
-            if (MathF.Abs(*(float*)analogDirectionDeadZoneAddress - 0.0625f) > 0.00001)
+            if (MathF.Abs(analogDirectionDeadZoneValue - 0.0625f) > 0.00001)
             {
-                _logger.WriteLine($"[SmoothAnalogMovement] Fail to load. *(float*)analogDirectionDeadZoneAddress = [{*(float*)analogDirectionDeadZoneAddress}]");
+                _logger.WriteLine($"[SmoothAnalogMovement] Fail to load. analogDirectionDeadZoneValue = [{analogDirectionDeadZoneValue}]");
                 return;
             }
         }
-        new Thread(() =>
-        {
-            Thread.Sleep(20000); // Game crashes if value is changed too soon (anti tamper protection?)
-            Memory.Instance.SafeWrite(analogDirectionDeadZoneAddress, 0.0f);
-        }).Start();
+        Memory.Instance.SafeWrite(analogDirectionDeadZoneAddress, 0.0f);
+        
+        // change instruction so that it points to any read only value in RAM with the original value of 0.0625f...
+        Memory.Instance.SafeWrite(resolutionChangePatchAddress, 0xFD752A35);
         _logger.WriteLine($"[SmoothAnalogMovement] Init Ok");
     }
 

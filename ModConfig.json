@@ -2,7 +2,7 @@
   "ModId": "p5spc.SmoothAnalogMovement",
   "ModName": "Smooth Analog Movement",
   "ModAuthor": "rebtd7",
-  "ModVersion": "1.0.0",
+  "ModVersion": "1.1.0",
   "ModDescription": "This fixes the \u0022digital-like\u0022 analog stick in the PC version of Persona 5 Strikers.",
   "ModDll": "SmoothAnalogMovement.dll",
   "ModIcon": "Preview.png",
