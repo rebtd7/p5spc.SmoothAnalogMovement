@@ -1,7 +1,10 @@
 ﻿using Reloaded.Mod.Interfaces;
 using SmoothAnalogMovement.Template;
+using Reloaded.Memory.Sigscan;
 using System.Diagnostics;
 using Reloaded.Memory.Sources;
+using Reloaded.Memory.Sigscan.Definitions;
+using Reloaded.Memory.Sigscan.Definitions.Structs;
 
 namespace SmoothAnalogMovement;
 
@@ -43,30 +46,41 @@ public class Mod : ModBase // <= Do not Remove.
 
         // If you want to implement e.g. unload support in your mod,
         // and some other neat features, override the methods in ModBase.
-        
+
         var mainModule = Process.GetCurrentProcess().MainModule;
         if (mainModule == null)
         {
-            _logger.WriteLine("[SmoothAnalogMovement] Fail to load. MainModule is null.");
-            return;
+            throw new Exception("[SmoothAnalogMovement]Main Module is Null!");
         }
-        var baseAddress = (long)mainModule.BaseAddress;
-        var analogDirectionDeadZoneAddress = baseAddress + 0x18F8148;
-        var resolutionChangePatchAddress = baseAddress + 0x2978AFB;
+        var baseAddress = mainModule.BaseAddress;
+        var exeSize = mainModule.ModuleMemorySize;
         unsafe
         {
-            var analogDirectionDeadZoneValue = *(float*)analogDirectionDeadZoneAddress;
-            if (MathF.Abs(analogDirectionDeadZoneValue - 0.0625f) > 0.00001)
-            {
-                _logger.WriteLine($"[SmoothAnalogMovement] Fail to load. analogDirectionDeadZoneValue = [{analogDirectionDeadZoneValue}]");
-                return;
-            }
+            using var scanner = new Scanner((byte*)baseAddress, exeSize);
+            int instructionToPatchAddressOffset = FindInstructionToPatch(scanner);
+
+            _logger.WriteLine($"[SmoothAnalogMovement] instruction offset {instructionToPatchAddressOffset:X}");
+
+            var ínstructionAddress = baseAddress + instructionToPatchAddressOffset;
+            var instructionSize = 8;
+            var instructionSourceDataOffset = 4;
+            var zeroFloatAddressOffset = 0x14;
+
+            Memory.Instance.SafeWrite(ínstructionAddress + instructionSourceDataOffset, zeroFloatAddressOffset - instructionToPatchAddressOffset - instructionSize);
+
         }
-        Memory.Instance.SafeWrite(analogDirectionDeadZoneAddress, 0.0f);
-        
-        // change instruction so that it points to any read only value in RAM with the original value of 0.0625f...
-        Memory.Instance.SafeWrite(resolutionChangePatchAddress, 0xFD752A35);
         _logger.WriteLine($"[SmoothAnalogMovement] Init Ok");
+    }
+
+    private int FindInstructionToPatch(Scanner scanner)
+    {
+        var result = scanner.FindPattern("F3 0F 10 3D ?? ?? ?? ?? 44 0F 29 44 24 20 f2 44 0f 10 05");
+        if (!result.Found)
+        {
+            throw new Exception("[SmoothAnalogMovement]Pattern not found");
+        }
+
+        return result.Offset;
     }
 
     #region For Exports, Serialization etc.
